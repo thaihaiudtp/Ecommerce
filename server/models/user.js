@@ -1,5 +1,6 @@
 const mongoose = require('mongoose'); // Erase if already required
 const bcrypt = require('bcrypt')
+const crypto = require('crypto-js')
 // Declare the Schema of the Mongo model
 var userSchema = new mongoose.Schema({
     firstname:{
@@ -48,7 +49,7 @@ var userSchema = new mongoose.Schema({
     passwordChange: {
         type: String,
     },
-    passwordReset:{
+    passwordResetToken:{
         type: String,
     },
     passwordResetTime: {
@@ -66,6 +67,10 @@ userSchema.methods = {
     isCorrectPassword: async function (password) {
         return await bcrypt.compareSync(password, this.password)
     }
+
+     
+
 }
+
 //Export the model
 module.exports = mongoose.model('User', userSchema);

@@ -1,5 +1,12 @@
 const router = require('express').Router()
 const controll = require('../controller/user')
+const {verifiAccessToken, isAdmin} = require('../middleware/verifiToken')
 router.post('/regester', controll.dangky)
 router.post('/login', controll.dangnhap)
+router.get('/current',verifiAccessToken, controll.getCurrent)
+router.get('/logout', controll.logout)
+router.post('/refreshToken', controll.refreshAccessToken)
+router.get('/',verifiAccessToken, isAdmin,  controll.getUsers)
+router.delete('/', verifiAccessToken, isAdmin, controll.deleteUser)
+router.put('/current', verifiAccessToken, controll.updateUser)
 module.exports = router
