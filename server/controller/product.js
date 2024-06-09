@@ -1,3 +1,4 @@
+const { response } = require('express')
 const Product = require('../models/product')
 const asyncHandler = require('express-async-handler')
 const slugify = require('slugify')
@@ -19,11 +20,28 @@ const getOneProduct = asyncHandler(async(req, res)=>{
     })
 })
 const getAllProduct = asyncHandler(async(req, res)=>{
-    const product = await Product.find()
+    //sao chep queryObj xoa cac truong
+    const queryObj = {...req.query}
+    const excludedField = ['page', 'limit', 'sort', 'fields']
+    excludedField.forEach(el => delete queryObj[el])
+    //Loc nang cao
+    let queryString = JSON.stringify(queryObj)
+    queryString.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
+    const query = JSON.parse(queryString)
+    //filter
+    if(queryObj?.title) query.title = { $regex: queryObj.title, $options: 'i'}
+    let queryCommand = Product.find(query)
+
+    //Excule
+    const products = await queryCommand;
+    const count = await Product.countDocuments(query);
+
     return res.status(200).json({
-        success: product? true:false,
-        AllProduct: product?product:'cannt get all'
+        success: products? true:false,
+        products: products? products:"Cann't get product",
+        count
     })
+
 })
 const updateProduct = asyncHandler(async(req, res)=>{
     const {pid} = req.params
