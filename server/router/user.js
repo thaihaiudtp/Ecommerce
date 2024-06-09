@@ -9,4 +9,5 @@ router.post('/refreshToken', controll.refreshAccessToken)
 router.get('/',verifiAccessToken, isAdmin,  controll.getUsers)
 router.delete('/', verifiAccessToken, isAdmin, controll.deleteUser)
 router.put('/current', verifiAccessToken, controll.updateUser)
+router.put('/:uid', verifiAccessToken,isAdmin, controll.updateUserbyAdmin)
 module.exports = router
